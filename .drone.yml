@@ -1,0 +1,44 @@
+---
+kind: pipeline
+name: linux-amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: prepare-x86_64-rpm
+    image: ubuntu:20.04
+    commands:
+    - apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install make curl tar wget git apt-transport-https ca-certificates gnupg-agent software-properties-common
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    - add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    - apt-get -y update && apt-get install -y docker-ce-cli
+    - git clone https://github.com/Oats87/containerd-packaging.git
+    - cd containerd-packaging
+    - make REF=${DRONE_TAG} docker.io/library/centos:8
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
+    when:
+      event:
+      - tag
+  - name: github-release-centos8-rpm
+    image: ibuildthecloud/github-release:v0.0.1
+    settings:
+      api_key:
+        from_secret: github_token
+      prerelease: true
+      checksum:
+      - sha256
+      checksum_file: CHECKSUMsum-rpm.txt
+      checksum_flatten: true
+      files:
+      - "containerd-packaging/build/centos/8/x86_64/*.rpm"
+    when:
+      event:
+      - tag
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
