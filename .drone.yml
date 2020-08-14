@@ -43,12 +43,16 @@ steps:
         from_secret: testing_aws_access_key_id
       AWS_SECRET_ACCESS_KEY:
         from_secret: testing_aws_secret_access_key
+      AWS_SESSION_TOKEN:
+        from_secret: testing_aws_session_token
       TESTING_AWS_S3_BUCKET:
         from_secret: testing_aws_s3_bucket
       TESTING_AWS_ACCESS_KEY_ID:
         from_secret: testing_aws_access_key_id
       TESTING_AWS_SECRET_ACCESS_KEY:
         from_secret: testing_aws_secret_access_key
+      TESTING_AWS_SESSION_TOKEN:
+        from_secret: testing_aws_session_token
       RPMARCH: x86_64
     commands:
     - scripts/upload-repo
