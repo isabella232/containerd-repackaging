@@ -4,6 +4,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install make 
 
 ENV DAPPER_OUTPUT ./containerd-packaging/build
 ENV DAPPER_SOURCE /source
+ENV DAPPER_ENV DRONE_TAG TAG
 ENV DAPPER_DOCKER_SOCKET true
 
 WORKDIR ${DAPPER_SOURCE}
