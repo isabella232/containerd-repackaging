@@ -1,0 +1,15 @@
+#!/bin/bash
+
+. ./scripts/version
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+apt-get -y update && apt-get install -y docker-ce-cli
+
+git clone https://github.com/Oats87/containerd-packaging.git
+
+cd containerd-packaging
+
+make REF=${RPM_VERSION} docker.io/library/centos:8

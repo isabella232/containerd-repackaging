@@ -1,0 +1,11 @@
+FROM ubuntu:20.04
+
+RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install make curl tar wget git apt-transport-https ca-certificates gnupg-agent software-properties-common
+
+ENV DAPPER_OUTPUT ./containerd-packaging/build
+ENV DAPPER_SOURCE /source
+ENV DAPPER_DOCKER_SOCKET true
+
+WORKDIR ${DAPPER_SOURCE}
+
+ENTRYPOINT ["./scripts/entry"]
