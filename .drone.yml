@@ -30,12 +30,12 @@ steps:
     - scripts/sign
     when:
       instance:
-        - drone-publish.rancher.io
-        ref:
-        - refs/head/master
-        - refs/tags/*
-        event:
-        - tag
+      - drone-publish.rancher.io
+      ref:
+      - refs/head/master
+      - refs/tags/*
+      event:
+      - tag
   - name: yum-repo-upload-centos8-x86_64
     image: centos:7
     environment:
@@ -56,12 +56,12 @@ steps:
     - scripts/upload-repo
     when:
       instance:
-        - drone-publish.rancher.io
-        ref:
-        - refs/head/master
-        - refs/tags/*
-        event:
-        - tag
+      - drone-publish.rancher.io
+      ref:
+      - refs/head/master
+      - refs/tags/*
+      event:
+      - tag
   - name: yum-repo-upload-centos8-source
     image: centos:7
     environment:
@@ -82,12 +82,12 @@ steps:
     - scripts/upload-src-repo
     when:
       instance:
-        - drone-publish.rancher.io
-        ref:
-        - refs/head/master
-        - refs/tags/*
-        event:
-        - tag
+      - drone-publish.rancher.io
+      ref:
+      - refs/head/master
+      - refs/tags/*
+      event:
+      - tag
   - name: github-release-centos8-rpm-x86_64
     image: ibuildthecloud/github-release:v0.0.1
     settings:
