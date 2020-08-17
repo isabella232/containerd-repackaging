@@ -7,17 +7,14 @@ platform:
   arch: amd64
 
 steps:
-  - name: build-rpm-centos8
+  - name: build-rpm-centos8-x86_64
     image: rancher/dapper:v0.5.2
     commands:
     - dapper scripts/build
     volumes:
       - name: docker
         path: /var/run/docker.sock
-    when:
-      event:
-      - tag
-  - name: sign-rpm-centos8
+  - name: sign-rpm-centos8-x86_64
     image: centos:7
     environment:
       TESTING_PRIVATE_KEY:
@@ -32,34 +29,66 @@ steps:
     commands:
     - scripts/sign
     when:
-      event:
-      - tag
-  - name: yum-repo-upload-centos8
+      instance:
+        - drone-publish.rancher.io
+        ref:
+        - refs/head/master
+        - refs/tags/*
+        event:
+        - tag
+  - name: yum-repo-upload-centos8-x86_64
     image: centos:7
     environment:
       AWS_S3_BUCKET:
-        from_secret: testing_aws_s3_bucket
+        from_secret: aws_s3_bucket
       AWS_ACCESS_KEY_ID:
-        from_secret: testing_aws_access_key_id
+        from_secret: aws_access_key_id
       AWS_SECRET_ACCESS_KEY:
-        from_secret: testing_aws_secret_access_key
-      AWS_SESSION_TOKEN:
-        from_secret: testing_aws_session_token
+        from_secret: aws_secret_access_key
       TESTING_AWS_S3_BUCKET:
         from_secret: testing_aws_s3_bucket
       TESTING_AWS_ACCESS_KEY_ID:
         from_secret: testing_aws_access_key_id
       TESTING_AWS_SECRET_ACCESS_KEY:
         from_secret: testing_aws_secret_access_key
-      TESTING_AWS_SESSION_TOKEN:
-        from_secret: testing_aws_session_token
       RPMARCH: x86_64
     commands:
     - scripts/upload-repo
     when:
-      event:
-      - tag
-  - name: github-release-centos8-rpm
+      instance:
+        - drone-publish.rancher.io
+        ref:
+        - refs/head/master
+        - refs/tags/*
+        event:
+        - tag
+  - name: yum-repo-upload-centos8-source
+    image: centos:7
+    environment:
+      AWS_S3_BUCKET:
+        from_secret: aws_s3_bucket
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
+      TESTING_AWS_S3_BUCKET:
+        from_secret: testing_aws_s3_bucket
+      TESTING_AWS_ACCESS_KEY_ID:
+        from_secret: testing_aws_access_key_id
+      TESTING_AWS_SECRET_ACCESS_KEY:
+        from_secret: testing_aws_secret_access_key
+      RPMARCH: x86_64
+    commands:
+    - scripts/upload-src-repo
+    when:
+      instance:
+        - drone-publish.rancher.io
+        ref:
+        - refs/head/master
+        - refs/tags/*
+        event:
+        - tag
+  - name: github-release-centos8-rpm-x86_64
     image: ibuildthecloud/github-release:v0.0.1
     settings:
       api_key:
@@ -67,11 +96,17 @@ steps:
       prerelease: true
       checksum:
       - sha256
-      checksum_file: CHECKSUMsum-rpm.txt
+      checksum_file: CHECKSUMsum-x86_64.txt
       checksum_flatten: true
       files:
-      - "containerd-packaging/build/centos/8/x86_64/*.rpm"
+      - "containerd-packaging/build/centos/8/x86_64/*src.rpm"
+      - "containerd-packaging/build/centos/8/x86_64/*x86_64.rpm"
     when:
+      instance:
+      - drone-publish.rancher.io
+      ref:
+      - refs/head/master
+      - refs/tags/*
       event:
       - tag
 volumes:

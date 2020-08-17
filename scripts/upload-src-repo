@@ -15,7 +15,7 @@ fi
 
 # Desired TARGET_S3_PATH would be something like containerdio/<channel>/centos/8/<arch>
 
-TARGET_S3_PATH="containerd/$RPM_CHANNEL/centos/8/$RPMARCH"
+TARGET_S3_PATH="containerd/$RPM_CHANNEL/centos/8/source"
 
 case "$RPM_CHANNEL" in
   "testing")
@@ -55,4 +55,4 @@ case "$RPM_CHANNEL" in
     ;;
 esac
 
-rpm-s3 --bucket $AWS_S3_BUCKET -p $TARGET_S3_PATH containerd-packaging/build/centos/8/${RPMARCH}/*${RPMARCH}.rpm
+rpm-s3 --bucket $AWS_S3_BUCKET -p $TARGET_S3_PATH containerd-packaging/build/centos/8/${RPMARCH}/*src.rpm
