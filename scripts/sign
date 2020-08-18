@@ -7,7 +7,7 @@ yum install -y rpm-sign expect git
 
 cat <<\EOF >~/.rpmmacros 
 %_signature gpg
-%_gpg_name chris.kim@rancher.com
+%_gpg_name ci@rancher.com
 EOF
 
 case "$RPM_CHANNEL" in
